@@ -34,11 +34,11 @@ export class Application {
   load(definitions) {
     const defs = Array.isArray(definitions) ? definitions : [definitions];
 
-    defs.forEach(def => this.manager.addDefinition(def));
+    defs.forEach(def => this.manager.addModule(def));
   }
 
   unload(slugs) {
-    slugs.forEach(slug => this.manager.removeSlug(slug));
+    slugs.forEach(slug => this.manager.removeModule(slug));
   }
 
   get components() {

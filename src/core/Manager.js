@@ -1,8 +1,28 @@
+import { Module } from './Module';
+
 export class Manager {
   constructor(application) {
     this.application = application;
+    this.modulesBySlug = new Map();
   }
 
+  get schema() {
+    return this.application.schema;
+  }
+
+  get element() {
+    return this.application.element;
+  }
+
+  get componentAttribute() {
+    return this.schema.componentAttribute;
+  }
+
+  get modules() {
+    return Array.from(this.modulesBySlug.values());
+  }
+
+  /* eslint-disable class-methods-use-this */
   start() {
     console.info('Manager:start');
   }
@@ -10,12 +30,26 @@ export class Manager {
   stop() {
     console.info('Manager:stop');
   }
+  /* eslint-enable class-methods-use-this */
 
-  addDefinition(definition) {
-    console.info('Manager:addDefinition');
+  addModule(definition) {
+    console.info('Manager:addModule');
+    const { slug } = definition;
+
+    this.removeModule(slug);
+
+    const module = new Module(this.application, definition);
+
+    this.modulesBySlug.set(slug, module);
+    // Connect module
   }
 
-  removeSlug(slug) {
+  removeModule(slug) {
+    const module = this.modulesBySlug.get(slug);
 
+    if (module) {
+      this.modulesBySlug.delete(slug);
+      // Disconnect module
+    }
   }
 }
