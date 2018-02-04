@@ -1,11 +1,21 @@
 {
-  "presets": [
-    ["env", {
-      "targets": {
-        "browsers": [
-          "last 2 versions"
-        ]
-      }
-    }]
-  ]
+  "env": {
+    // jest doesn't take account of BABEL_ENV, you need to set NODE_ENV - https://facebook.github.io/jest/docs/getting-started.html#using-babel
+    "commonjs": {
+      "presets": ["env"]
+    },
+    "es": {
+      "presets": [
+        ["env", {
+          "modules": false
+        }]
+      ]
+    },
+    "umd": {
+      "presets": ["env"],
+      "plugins": [
+        "add-module-exports"
+      ]
+    }
+  }
 }
