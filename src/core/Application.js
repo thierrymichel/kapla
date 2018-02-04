@@ -1,6 +1,7 @@
 import { defaultSchema } from './schema';
+import { Manager } from './Manager';
 
-export default class Application {
+export class Application {
   static start(element, schema) {
     const application = new Application(element, schema);
 
@@ -12,28 +13,40 @@ export default class Application {
   constructor(element = document.body, schema = defaultSchema) {
     this.element = element;
     this.schema = schema;
+    this.manager = new Manager(this);
   }
 
   start() {
-    console.info('start', this.element, this.schema);
+    this.manager.start();
   }
 
-  stop() { // eslint-disable-line class-methods-use-this
-    console.info('stop');
+  stop() {
+    this.manager.stop();
   }
 
-  register(slug, componentConstructor) {
+  register(slug, ComponentConstructor) {
     this.load({
       slug,
-      componentConstructor,
+      ComponentConstructor,
     });
   }
 
   load(definitions) {
-    definitions.forEach(def => {
-      if (def) {
-        this.mod = new def.ComponentConstructor();
-      }
-    });
+    const defs = Array.isArray(definitions) ? definitions : [definitions];
+
+    defs.forEach(def => this.manager.addDefinition(def));
+  }
+
+  unload(slugs) {
+    slugs.forEach(slug => this.manager.removeSlug(slug));
+  }
+
+  get components() {
+    return this.manager.contexts.map(context => context.component);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  handleError(error, message, detail) {
+    console.error('%s\n\n%o\n\n%o', message, error, detail);
   }
 }
