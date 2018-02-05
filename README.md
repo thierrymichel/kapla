@@ -46,4 +46,4 @@ export default class extends Component {
 }
 ```
 
-> Compoent filename must be `PascalCase.js`
+> Component filename must be `PascalCase.js`

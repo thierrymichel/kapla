@@ -15,7 +15,7 @@ export function autoLoad(context) {
  * Get the definition using slug
  *
  * @param {any} context webpack context
- * @param {String} key component filename/path ?
+ * @param {String} key component filename/path
  * @returns {Object} definition
  */
 function getDefinition(context, key) {
@@ -51,7 +51,7 @@ function buildDefinition(module, slug) {
 /**
  * Get slug from filename/path ?
  *
- * @param {String} key component filename/path ?
+ * @param {String} key component filename/path
  * @returns {String} component name
  */
 function getSlug(key) {
