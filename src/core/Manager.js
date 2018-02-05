@@ -33,7 +33,7 @@ export class Manager {
   /* eslint-enable class-methods-use-this */
 
   addModule(definition) {
-    console.info('Manager:addModule');
+    console.info('Manager:addModule', definition.slug);
     const { slug } = definition;
 
     this.removeModule(slug);

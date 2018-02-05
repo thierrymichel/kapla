@@ -55,10 +55,17 @@ function buildDefinition(module, slug) {
  * @returns {String} component name
  */
 function getSlug(key) {
-  const [, logicalName] = key.match(/^(?:\.\/)?([a-z-_/]+)(?:\.js?)$/) || [];
+  // [folder/[subfolders/]]MyComponentFileName.js
+  const regex = /^(?:\.\/)?([A-Z]{1}[A-Za-z]+|[a-z/]+\/[A-Z]{1}[A-Za-z]+)(?:\.js?)$/;
+  const [, logicalName] = key.match(regex) || [];
 
   if (logicalName) {
-    return logicalName.replace(/_/g, '-').replace(/\//g, '--');
+    return logicalName // Ex: 1. AbbAbb || 2. bb/bb/AbbAbb
+      .replace(/([A-Z])/g, '-$1') // 1. -Abb-Abb || 2. bb/bb/-Abb-Abb
+      .replace(/^-/, '') // 1. Abb-Abb
+      .replace(/\/-/g, '/') // 2. bb/bb/Abb-Abb
+      .replace(/\//g, '--') // 2. bb--bb--Abb-Abb
+      .toLowerCase(); // 1. abb-abb || 2. bb--bb--abb-abb
   }
 
   return false;
