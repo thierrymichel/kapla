@@ -49,7 +49,7 @@ function buildDefinition(module, slug) {
 }
 
 /**
- * Get slug from filename/path ?
+ * Get slug from filename/path
  *
  * @param {String} key component filename/path
  * @returns {String} component name

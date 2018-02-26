@@ -1,8 +1,10 @@
 import { Module } from './Module';
+import { TokenObserver } from '../observers';
 
 export class Manager {
   constructor(application) {
     this.application = application;
+    this.observer = new TokenObserver(this.element, this.componentAttribute, this);
     this.modulesBySlug = new Map();
   }
 
@@ -22,18 +24,15 @@ export class Manager {
     return Array.from(this.modulesBySlug.values());
   }
 
-  /* eslint-disable class-methods-use-this */
   start() {
-    console.info('Manager:start');
+    this.observer.start();
   }
 
   stop() {
-    console.info('Manager:stop');
+    this.observer.stop();
   }
-  /* eslint-enable class-methods-use-this */
 
   addModule(definition) {
-    console.info('Manager:addModule', definition.slug);
     const { slug } = definition;
 
     this.removeModule(slug);
@@ -41,7 +40,8 @@ export class Manager {
     const module = new Module(this.application, definition);
 
     this.modulesBySlug.set(slug, module);
-    // Connect module
+    // Init module
+    this._initModule(module);
   }
 
   removeModule(slug) {
@@ -49,7 +49,55 @@ export class Manager {
 
     if (module) {
       this.modulesBySlug.delete(slug);
-      // Disconnect module
+      // Destroy module
+      this._destroyModule(module);
+    }
+  }
+
+  // Token observer delegate
+  elementMatchedToken(element, token) {
+    this._initModuleBySlug(token, element);
+  }
+
+  elementUnmatchedToken(element, token) {
+    this._destroyModuleBySlug(token, element);
+  }
+
+  // Contexts
+  get contexts() {
+    return this.modules.reduce((contexts, module) => contexts.concat(Array.from(module.contexts)), []);
+  }
+
+  // Private
+  _initModule(module) {
+    const elements = this.observer.getElementsMatchingToken(module.slug);
+
+    for (const element of elements) {
+      module.initElement(element);
+    }
+  }
+
+  _destroyModule(module) { // eslint-disable-line class-methods-use-this
+    const { contexts } = module;
+
+    for (const { element } of contexts) {
+      module.destroyElement(element);
+    }
+  }
+
+  _initModuleBySlug(slug, element) {
+    const module = this.modulesBySlug.get(slug);
+
+    if (module) {
+      module.initElement(element);
+    }
+  }
+
+  _destroyModuleBySlug(slug, element) {
+    const module = this.modulesBySlug.get(slug);
+
+    if (module) {
+      module.destroyElement(element);
     }
   }
 }
