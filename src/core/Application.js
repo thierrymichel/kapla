@@ -32,13 +32,15 @@ export class Application {
   }
 
   load(definitions) {
-    const defs = Array.isArray(definitions) ? definitions : [definitions];
+    const items = Array.isArray(definitions) ? definitions : [definitions];
 
-    defs.forEach(def => this.manager.addModule(def));
+    items.forEach(def => this.manager.addModule(def));
   }
 
   unload(slugs) {
-    slugs.forEach(slug => this.manager.removeModule(slug));
+    const items = Array.isArray(slugs) ? slugs : [slugs];
+
+    items.forEach(slug => this.manager.removeModule(slug));
   }
 
   get components() {
@@ -46,7 +48,10 @@ export class Application {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  handleError(error, message, detail) {
-    console.error('%s\n\n%o\n\n%o', message, error, detail);
+  handleError(error, message) {
+    // DEV
+    // console.error('%s\n\n%o\n\n%o', message, error, detail);
+    // console.error(error);
+    throw new Error(`🤦 ${message}`);
   }
 }

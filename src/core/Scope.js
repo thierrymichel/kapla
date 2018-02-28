@@ -5,8 +5,11 @@ export class Scope {
     this.schema = schema;
     this.slug = slug;
     this.element = element;
-    this.refs = this.getRefs();
     this.data = new Data(this);
+  }
+
+  get refs() {
+    return this.getRefs();
   }
 
   get refAttribute() {
@@ -22,13 +25,17 @@ export class Scope {
     const elements = this.element.querySelectorAll(this.refSelector);
 
     for (const element of Array.from(elements)) {
-      const name = element
-        .getAttribute(this.refAttribute)
-        .replace(`${this.slug}.`, '');
+      const name = this.getRefName(element);
 
-      refs[name] = element;
+      refs[name] = refs[name] ? [refs[name], element] : element;
     }
 
     return refs;
+  }
+
+  getRefName(element) {
+    return element
+      .getAttribute(this.refAttribute)
+      .replace(`${this.slug}.`, '');
   }
 }

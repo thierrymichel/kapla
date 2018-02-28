@@ -1,28 +1,35 @@
-/* global test, expect */
-import { Application } from 'kapla/src';
+/* global it, expect */
+import { createApplication } from 'utils/setup';
 
-test('Application with defaults', () => {
-  const app = Application.start();
+it('starts with defaults', () => {
+  const app = createApplication();
 
   expect(app.element instanceof HTMLBodyElement).toBeTruthy();
   expect(app.schema.componentAttribute).toBe('data-component');
   expect(app.schema.refAttribute).toBe('data-ref');
 });
 
-test('Application with element', () => {
-  const element = document.createElement('section');
-  const app = Application.start(element);
+it('starts with custom element', () => {
+  const app = createApplication(document.createElement('section'));
 
   expect(app.element instanceof HTMLElement).toBeTruthy();
   expect(app.element.nodeName).toBe('SECTION');
 });
 
-test('Application with custom schema', () => {
-  const app = Application.start(document.body, {
+it('starts with custom schema', () => {
+  const app = createApplication(document.body, {
     componentAttribute: 'data-foo',
     refAttribute: 'data-bar',
   });
 
   expect(app.schema.componentAttribute).toBe('data-foo');
   expect(app.schema.refAttribute).toBe('data-bar');
+});
+
+it('stops', () => {
+  const app = createApplication();
+
+  app.stop();
+
+  expect(app.manager.observer.started).toBeFalsy();
 });

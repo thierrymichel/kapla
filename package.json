@@ -25,7 +25,7 @@
     "build:umd:watch": "npm run build:umd -- --watch",
     "build:umd:min": "cross-env BABEL_ENV=umd NODE_ENV=production webpack --progress --profile",
     "test": "npm run lint && jest --coverage || exit 0",
-    "test:watch": "jest --watch",
+    "test:watch": "jest --watch --verbose",
     "coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "prepublish": "npm-run-all clean test build"
   },

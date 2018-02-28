@@ -571,3 +571,7 @@ function patchNotifyChange(window, w) {
 
 patchNotifyChange(global, window);
 Object.defineProperty(window, 'MutationObserver', {value: MutationObserver});
+
+// https://github.com/jsdom/jsdom/issues/639
+// Util.counter = 1;
+// Util.expando = 'mo_id';
