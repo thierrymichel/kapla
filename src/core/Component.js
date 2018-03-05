@@ -1,5 +1,8 @@
-export class Component {
+import { Handler } from '../events';
+
+export class Component extends Handler {
   constructor(context) {
+    super(context);
     this.context = context;
   }
 
