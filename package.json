@@ -66,5 +66,8 @@
     "rimraf": "^2.6.2",
     "webpack": "^3.10.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "detect-it": "^3.0.4",
+    "eventemitter3": "^3.0.1"
+  }
 }

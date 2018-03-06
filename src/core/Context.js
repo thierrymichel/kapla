@@ -30,6 +30,22 @@ export class Context {
     }
   }
 
+  bind() {
+    try {
+      this.component.bind();
+    } catch (error) {
+      this.handleError(error, 'binding component');
+    }
+  }
+
+  unbind() {
+    try {
+      this.component.unbind();
+    } catch (error) {
+      this.handleError(error, 'unbinding component');
+    }
+  }
+
   get application() {
     return this.module.application;
   }

@@ -1,4 +1,5 @@
 import { defaultSchema } from './schema';
+import { ee } from '../events/Bus';
 import { Manager } from './Manager';
 
 export class Application {
@@ -14,6 +15,7 @@ export class Application {
     this.element = element;
     this.schema = schema;
     this.manager = new Manager(this);
+    this.bus = ee;
   }
 
   start() {
@@ -45,6 +47,25 @@ export class Application {
 
   get components() {
     return this.manager.contexts.map(context => context.component);
+  }
+
+  bind(...events) {
+    const items = Array.isArray(events[0]) ? events[0] : [{
+      name: events[0],
+      log: events[1],
+    }];
+
+    items.forEach(event => this.bus.add(event.name, event.log));
+  }
+
+  unbind(names) {
+    const items = Array.isArray(names) ? names : [names];
+
+    items.forEach(name => this.bus.remove(name));
+  }
+
+  get events() {
+    return this.bus.events;
   }
 
   // eslint-disable-next-line class-methods-use-this
