@@ -95,3 +95,122 @@ this.data.has('prop') // true
 this.data.get('prop') // 'qux'
 this.data.set('prop', 'quux') // 'quux'
 ```
+
+#### Events
+
+##### Native
+
+Automatic binding/unbinding through lifecycle (init/destroy).
+
+```js
+export default class extends Component {
+    onClick(e) {}
+    onBlur(e) {}
+    …
+}
+```
+
+##### Mixed
+
+Automatic binding/unbinding through lifecycle (init/destroy).
+
+```js
+export default class extends Component {
+    onEnter(e) {}
+    onMove(e) {}
+    onLeave(e) {}
+}
+```
+
+##### Custom
+
+Need to be 'registered' (before component registration).
+
+```js
+import { myCustomEvent } from './events';
+
+app.use('myCustomEvent', myCustomEvent);
+```
+
+Then, automatic binding/unbinding through lifecycle (init/destroy).
+
+```js
+export default class extends Component {
+    onMyCustomEvent(...args) {}
+}
+```
+
+###### CustomEvent examples
+
+Should have `bind` and `unbind` methods which receive `component` and `ee` as parameters.
+Can be 'scoped' to `component` (default) or `global` (see second example).
+In this case, you can choose to log the event name when it is emitted…
+Also, global custom events are binded only when components are listening to them.
+They are unbinded when no more components are listening to them.
+
+```js
+export const clickOutside = {
+  eventsByElement: new Map(),
+  bind(component) {
+    this.eventsByElement.set(component.context.element, this.listener(component));
+
+    window.addEventListener('click', this.eventsByElement.get(component.context.element));
+  },
+  unbind(component) {
+    window.removeEventListener('click', this.eventsByElement.get(component.context.element));
+  },
+  listener(component) {
+    return function listener(e) {
+      if (!component.context.element.contains(e.target)) {
+        component.onClickOutside(e);
+      }
+    };
+  },
+};
+```
+
+```js
+export const raf = {
+  scope: 'global',
+  log: false,
+  eventsByElement: new Map(),
+  bind(component, ee) {
+    this.ee = ee;
+    this.eventsByElement.set(component.context.element, this.listener(component));
+
+    this.ee.on('raf', this.eventsByElement.get(component.context.element));
+    this.onTick = this.onTick.bind(this);
+    this.time = window.performance.now();
+    this.raf = window.requestAnimationFrame(this.onTick);
+  },
+  unbind() {
+    window.cancelAnimationFrame(this.raf);
+  },
+  onTick(now) {
+    this.time = now;
+    this.delta = (now - this.oldTime) / 1000;
+    this.oldTime = now;
+    this.ee.emit('raf', this.delta, now);
+    this.raf = window.requestAnimationFrame(this.onTick);
+  },
+  listener(component) {
+    return function listener(delta, now) {
+      component.onRaf(delta, now);
+    };
+  },
+};
+```
+
+##### Manuel
+
+Native, mixed or custom events can be 'binded' or 'unbinded' manually.
+
+```js
+export default class extends Component {
+    method() {
+        this.bind('click');
+        this.bind('enter');
+        this.bind('myCustomEvent');
+    }
+}
+```
