@@ -27,7 +27,7 @@ export class Module {
     if (context && !this.initializedContexts.has(context)) {
       this.initializedContexts.add(context);
       context.init();
-      context.bind();
+      context.bindAll();
     }
   }
 
@@ -36,7 +36,7 @@ export class Module {
 
     if (context && this.initializedContexts.has(context)) {
       this.initializedContexts.delete(context);
-      context.unbind();
+      context.unbindAll();
       context.destroy();
     }
   }

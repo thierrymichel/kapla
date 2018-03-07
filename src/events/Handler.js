@@ -5,10 +5,11 @@ import {
   lcfirst,
 } from '../helpers';
 
-import { ee } from './Bus';
-import passiveEvents from './passiveEvents';
-import mixedEvents from './mixedEvents';
-import * as customEvents from './customEvents';
+import {
+  customEvents,
+  mixedEvents,
+  passiveEvents,
+} from '../events';
 
 export class Handler {
   static get events() {
@@ -25,11 +26,9 @@ export class Handler {
 
   constructor(context) {
     this.context = context;
-    console.info('context????', context, this);
   }
 
   static getMethod(eventName) {
-    // DEV -> will change with customEvents
     const name = mixedEvents.hasValue(eventName) ?
       mixedEvents.getKeysForValue(eventName)[0] :
       eventName;
@@ -38,88 +37,115 @@ export class Handler {
     return `on${type}`;
   }
 
-  static getType(eventName) {
-    // Global binded event
-    if (ee.events.includes(eventName)) {
-      return 'global';
-    }
-
-    // Custom events
-    if (customEvents[eventName]) {
-      return 'custom';
-    }
-
-    // Mixed events
-    if (mixedEvents.hasKey(eventName)) {
-      return 'mixed';
-    }
-
-    // Default
-    return 'native';
-  }
-
-  static getOptions(eventName, opts = { capture: false }) {
+  static getOptions(type, opts = { capture: false }) {
     // https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
-    if (passiveEvents.includes(eventName)) {
+    if (passiveEvents.includes(type)) {
       opts.passive = true;
     }
 
     return detectIt.passiveEvents === true ? opts : opts.capture;
   }
 
+  getCategory(type) {
+    // Custom event
+    if (customEvents.getScope(type)) {
+      return 'custom';
+    }
+
+    // Mixed event
+    if (mixedEvents.hasKey(type)) {
+      return 'mixed';
+    }
+
+    // Native event
+    if (this[Handler.getMethod(type)]) {
+      return 'native';
+    }
+
+    return false;
+  }
+
+  _bindEvent(type) {
+    const category = this.getCategory(type);
+
+    if (!category) {
+      return;
+    }
+
+    switch (category) {
+      case 'custom':
+        customEvents.bind(type, this);
+        break;
+
+      case 'mixed':
+        mixedEvents.getValuesForKey(type).forEach(mixed => {
+          this.context.element.addEventListener(mixed, this, Handler.getOptions(mixed));
+        });
+        break;
+
+      case 'native':
+        this.context.element.addEventListener(type, this, Handler.getOptions(type));
+        break;
+
+      default:
+        console.warn(`Unknown event type [${type}]`);
+        break;
+    }
+  }
+
+  _unbindEvent(type) {
+    const category = this.getCategory(type);
+
+    if (!category) {
+      return;
+    }
+
+    switch (category) {
+      case 'custom':
+        customEvents.unbind(type, this);
+        break;
+
+      case 'mixed':
+        mixedEvents.getValuesForKey(type).forEach(mixed => {
+          this.context.element.removeEventListener(mixed, this, Handler.getOptions(mixed));
+        });
+        break;
+
+      case 'native':
+        this.context.element.removeEventListener(type, this, Handler.getOptions(type));
+        break;
+
+      default:
+        console.warn(`Unknown event type [${type}]`);
+        break;
+    }
+  }
+
   handleEvent(e) {
     this[Handler.getMethod(e.type)](e);
   }
 
-  bind() {
+  bindAll() {
     const events = this.constructor.events || [];
 
-    // Check for native, global, mixed, custom…
-    events.forEach(event => {
-      switch (Handler.getType(event)) {
-        case 'global':
-          ee.on(event, this[Handler.getMethod(event)], this);
-          break;
-
-        case 'mixed':
-          mixedEvents.getValuesForKey(event).forEach(mixed => {
-            this.context.element.addEventListener(mixed, this, Handler.getOptions(mixed));
-          });
-          break;
-
-        case 'custom':
-          customEvents[event].bind(this);
-          break;
-
-        case 'native':
-        default:
-          this.context.element.addEventListener(event, this, Handler.getOptions(event));
-      }
+    events.forEach(type => {
+      this._bindEvent(type);
     });
   }
 
-  unbind() {
+  unbindAll() {
     const { events } = this.constructor;
 
-    events.forEach(event => {
-      switch (Handler.getType(event)) {
-        case 'global':
-          ee.off(event, this[Handler.getMethod(event)]);
-          break;
-
-        case 'mixed':
-          mixedEvents.getValuesForKey(event).forEach(mixed => {
-            this.context.element.removeEventListener(mixed, this);
-          });
-          break;
-
-        case 'custom':
-          customEvents[event].unbind(this);
-          break;
-        case 'native':
-        default:
-          this.context.element.removeEventListener(event, this);
-      }
+    events.forEach(type => {
+      this._unbindEvent(type);
     });
+  }
+
+  bind(type) {
+    this._bindEvent(type);
+  }
+
+  unbind(type) {
+    this._unbindEvent(type);
   }
 }

@@ -1,5 +1,8 @@
-const passiveEvents = [
+export const passiveEvents = [
+  'scroll',
+  'wheel',
   'touchstart',
+  'touchmove',
+  'touchend',
 ];
 
-export default passiveEvents;

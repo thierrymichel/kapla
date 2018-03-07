@@ -6,12 +6,10 @@ const events = {
   leave: ['mouseleave', 'touchend'],
 };
 
-const mixedEvents = new Multimap();
+export const mixedEvents = new Multimap();
 
-Object.keys(events).forEach(key => {
-  events[key].forEach(event => {
-    mixedEvents.add(key, event);
+Object.keys(events).forEach(type => {
+  events[type].forEach(subType => {
+    mixedEvents.add(type, subType);
   });
 });
-
-export default mixedEvents;

@@ -1,6 +1,6 @@
 import { defaultSchema } from './schema';
-import { ee } from '../events/Bus';
 import { Manager } from './Manager';
+import { customEvents } from '../events';
 
 export class Application {
   static start(element, schema) {
@@ -15,7 +15,7 @@ export class Application {
     this.element = element;
     this.schema = schema;
     this.manager = new Manager(this);
-    this.bus = ee;
+    this.customEvents = customEvents;
   }
 
   start() {
@@ -49,30 +49,38 @@ export class Application {
     return this.manager.contexts.map(context => context.component);
   }
 
-  bind(...events) {
-    const items = Array.isArray(events[0]) ? events[0] : [{
-      name: events[0],
-      log: events[1],
-    }];
+  use(type, event) {
+    if (this.customEvents.types.has(type)) {
+      this.handleError('oups', 'This event type already exists!');
+    }
 
-    items.forEach(event => this.bus.add(event.name, event.log));
+    this.customEvents.add(type, event);
   }
 
-  unbind(names) {
-    const items = Array.isArray(names) ? names : [names];
+  // DEV
+  // bind(...events) {
+  //   const items = Array.isArray(events[0]) ? events[0] : [{
+  //     name: events[0],
+  //     log: events[1],
+  //   }];
 
-    items.forEach(name => this.bus.remove(name));
-  }
+  //   items.forEach(event => this.bus.add(event.name, event.log));
+  // }
+
+  // unbind(names) {
+  //   const items = Array.isArray(names) ? names : [names];
+
+  //   items.forEach(name => this.bus.remove(name));
+  // }
 
   get events() {
-    return this.bus.events;
+    return this.customEvents.events;
   }
 
   // eslint-disable-next-line class-methods-use-this
   handleError(error, message) {
     // DEV
     // console.error('%s\n\n%o\n\n%o', message, error, detail);
-    // console.error(error);
     throw new Error(`🤦 ${message}`);
   }
 }

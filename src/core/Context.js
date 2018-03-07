@@ -30,17 +30,17 @@ export class Context {
     }
   }
 
-  bind() {
+  bindAll() {
     try {
-      this.component.bind();
+      this.component.bindAll();
     } catch (error) {
       this.handleError(error, 'binding component');
     }
   }
 
-  unbind() {
+  unbindAll() {
     try {
-      this.component.unbind();
+      this.component.unbindAll();
     } catch (error) {
       this.handleError(error, 'unbinding component');
     }

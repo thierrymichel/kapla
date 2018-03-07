@@ -25,6 +25,7 @@ export class Component extends Handler {
   get data() {
     return this.scope.data;
   }
+
   /* eslint-disable no-empty-function, class-methods-use-this */
   load() {}
   init() {}
