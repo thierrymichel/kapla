@@ -69,7 +69,7 @@ export class Handler {
     const category = this.getCategory(type);
 
     if (!category) {
-      return;
+      this.context.handleError(new Error(), `Unknown event type [${type}]`);
     }
 
     switch (category) {
@@ -84,11 +84,8 @@ export class Handler {
         break;
 
       case 'native':
-        this.context.element.addEventListener(type, this, Handler.getOptions(type));
-        break;
-
       default:
-        console.warn(`Unknown event type [${type}]`);
+        this.context.element.addEventListener(type, this, Handler.getOptions(type));
         break;
     }
   }
@@ -97,7 +94,7 @@ export class Handler {
     const category = this.getCategory(type);
 
     if (!category) {
-      return;
+      this.context.handleError(new Error(), `Unknown event type [${type}]`);
     }
 
     switch (category) {
@@ -112,11 +109,8 @@ export class Handler {
         break;
 
       case 'native':
-        this.context.element.removeEventListener(type, this, Handler.getOptions(type));
-        break;
-
       default:
-        console.warn(`Unknown event type [${type}]`);
+        this.context.element.removeEventListener(type, this, Handler.getOptions(type));
         break;
     }
   }

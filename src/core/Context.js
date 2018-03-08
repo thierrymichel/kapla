@@ -69,6 +69,6 @@ export class Context {
       element,
     }, detail);
 
-    this.application.handleError(error, `Error ${message}`, detail);
+    this.application.handleError(error, message, detail);
   }
 }

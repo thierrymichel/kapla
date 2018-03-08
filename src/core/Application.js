@@ -1,3 +1,5 @@
+const exclamations = require('exclamation');
+
 import { defaultSchema } from './schema';
 import { Manager } from './Manager';
 import { customEvents } from '../events';
@@ -81,6 +83,6 @@ export class Application {
   handleError(error, message) {
     // DEV
     // console.error('%s\n\n%o\n\n%o', message, error, detail);
-    throw new Error(`🤦 ${message}`);
+    throw new Error(`🤦 ${exclamations.random()}! ${message}`);
   }
 }
