@@ -215,7 +215,7 @@ export const raf = {
 };
 ```
 
-##### Manuel
+##### Manual
 
 Native, mixed or custom events can be 'binded' or 'unbinded' manually.
 
