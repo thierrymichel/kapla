@@ -27,7 +27,15 @@ export class Scope {
     for (const element of Array.from(elements)) {
       const name = this.getRefName(element);
 
-      refs[name] = refs[name] ? [refs[name], element] : element;
+      if (refs[name]) {
+        if (Array.isArray(refs[name])) {
+          refs[name].push(element);
+        } else {
+          refs[name] = [refs[name], element];
+        }
+      } else {
+        refs[name] = element;
+      }
     }
 
     return refs;
