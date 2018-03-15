@@ -122,6 +122,20 @@ export default class extends Component {
 }
 ```
 
+##### Native/mixed + delegate
+
+```js
+export default class extends Component {
+    init() {
+        this.delegateClick = 'selector';
+        this.delegateMove = 'selector';
+    }
+    onClick(e, target) {}
+    onMove(e, target) {}
+    …
+}
+```
+
 ##### Custom
 
 Need to be 'registered' (before component registration).

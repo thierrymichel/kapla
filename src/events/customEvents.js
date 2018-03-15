@@ -1,5 +1,6 @@
 import { Multimap } from '../multimap';
 import { ee } from './Bus';
+import CustomEvent from './CustomEvent';
 
 class CustomEvents {
   constructor() {
@@ -21,7 +22,8 @@ class CustomEvents {
     return this._eventByType.get(type);
   }
 
-  add(type, event) {
+  add(type, e) {
+    const event = e || new CustomEvent(type);
     const scope = event.scope || 'component';
 
     this._typesByScope.add(scope, type);

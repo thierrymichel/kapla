@@ -116,7 +116,21 @@ export class Handler {
   }
 
   handleEvent(e) {
-    this[Handler.getMethod(e.type)](e);
+    // Get correct type (if mixed event) to check for delegate
+    const type = mixedEvents.getKeysForValue(e.type)[0] || e.type;
+    const delegate = this[`delegate${ucfirst(type)}`];
+
+    if (delegate) {
+      const targetElement = e.target;
+      const potentialElements = [...this.context.element.querySelectorAll(delegate)];
+      const hasMatch = potentialElements.indexOf(targetElement) >= 0;
+
+      if (hasMatch) {
+        this[Handler.getMethod(e.type)](e, targetElement);
+      }
+    } else {
+      this[Handler.getMethod(e.type)](e);
+    }
   }
 
   bindAll() {
