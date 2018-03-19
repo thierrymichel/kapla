@@ -3,6 +3,7 @@ import detectIt from 'detect-it';
 import {
   ucfirst,
   lcfirst,
+  $parent,
 } from '../helpers';
 
 import {
@@ -46,6 +47,10 @@ export class Handler {
     return detectIt.passiveEvents === true ? opts : opts.capture;
   }
 
+  getCustomOptions(type) {
+    return this[`options${ucfirst(type)}`] || false;
+  }
+
   getCategory(type) {
     // Custom event
     if (customEvents.getScope(type)) {
@@ -74,7 +79,7 @@ export class Handler {
 
     switch (category) {
       case 'custom':
-        customEvents.bind(type, this);
+        customEvents.bind(type, this, this.getCustomOptions(type));
         break;
 
       case 'mixed':
@@ -121,7 +126,7 @@ export class Handler {
     const delegate = this[`delegate${ucfirst(type)}`];
 
     if (delegate) {
-      const targetElement = e.target;
+      const targetElement = e.target.matches(delegate) ? e.target : $parent(e.target, delegate);
       const potentialElements = [...this.context.element.querySelectorAll(delegate)];
       const hasMatch = potentialElements.indexOf(targetElement) >= 0;
 
