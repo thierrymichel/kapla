@@ -14,7 +14,7 @@ The main goal is to make easier to implement common tasks/features:
 
 - Component declaration and instanciation
 - Component init and destroy (Barba.js ou load more…)
-- Access to `$el` et `$refs`
+- Access to `$element` et `$refs`
 - Use of `data-attribute`
 - Events handling with the right context (standard or custom)
 
