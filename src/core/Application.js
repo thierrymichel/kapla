@@ -53,7 +53,7 @@ export class Application {
 
   use(type, event) {
     if (this.customEvents.types.has(type)) {
-      this.handleError('oups', 'This event type already exists!');
+      this.handleError('oups', `This event type already exists [${type}]`);
     }
 
     this.customEvents.add(type, event);
