@@ -1,10 +1,10 @@
 import { Multimap } from '../multimap';
 import { ee } from './Bus';
-import CustomEvent from './CustomEvent';
+import { CustomEvent } from './CustomEvent';
 
 class CustomEvents {
   constructor() {
-    this.types = new Set();
+    this._types = new Set();
     this._typesByScope = new Multimap();
     this._eventByType = new Map();
     this._componentsByType = new Multimap();
@@ -12,6 +12,10 @@ class CustomEvents {
 
   get events() {
     return Array.from(this.types);
+  }
+
+  get types() {
+    return this._types;
   }
 
   getScope(type) {
@@ -26,6 +30,7 @@ class CustomEvents {
     const event = e || new CustomEvent(type);
     const scope = event.scope || 'component';
 
+    this._types.add(type);
     this._typesByScope.add(scope, type);
     this._eventByType.set(type, event);
 
@@ -34,18 +39,18 @@ class CustomEvents {
     }
   }
 
-  bind(type, component) {
+  bind(type, component, options) {
     const scope = this.getScope(type);
     const event = this.getEvent(type);
 
     if (scope === 'global') {
       if (!this._componentsByType.hasKey(type)) {
-        event.bind(component, ee);
+        event.bind(component, ee, options);
       }
 
       this._componentsByType.add(type, component);
     } else {
-      event.bind(component, ee);
+      event.bind(component, ee, options);
     }
   }
 

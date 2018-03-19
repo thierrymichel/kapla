@@ -1,25 +1,31 @@
 import { ucfirst } from '../helpers';
 
-export default class CustomEvent {
+export class CustomEvent {
   constructor(name) {
     this.name = name;
-    this.type = `on${ucfirst(name)}`;
+    this.capitalizedName = ucfirst(name);
+    // DEV
+    // this.type = `on${this.capitalizedName}`;
     this.log = true;
-    this.eventsByElements = new Map();
+    this.eventByElement = new Map();
   }
 
   bind(component, ee) {
-    this.eventsByElements.set(component.context.element, this.listener(component));
+    const { element } = component.context;
 
-    ee.on(this.name, this.eventsByElements.get(component.context.element));
+    this.eventByElement.set(element, this.listener(component));
+
+    ee.on(this.name, this.eventByElement.get(element));
   }
 
   unbind(component, ee) {
-    ee.off(this.name, this.eventsByElements.get(component.context.element));
+    const { element } = component.context;
+
+    ee.off(this.name, this.eventByElement.get(element));
   }
 
   listener(component) {
-    const type = `on${ucfirst(this.name)}`;
+    const type = `on${this.capitalizedName}`;
 
     return function listener(...args) {
       component[type](...args);
