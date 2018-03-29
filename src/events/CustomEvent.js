@@ -6,6 +6,7 @@ export class CustomEvent {
     this.capitalizedName = ucfirst(name);
     // DEV
     // this.type = `on${this.capitalizedName}`;
+    this.scope = 'global';
     this.log = true;
     this.eventByElement = new Map();
   }
