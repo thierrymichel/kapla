@@ -80,7 +80,7 @@ export default class extends Component {
 ```
 
 ```js
-this.$el // DIV
+this.$element // DIV
 this.$refs.submit // BUTTON
 ```
 
