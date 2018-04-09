@@ -44,7 +44,7 @@ class CustomEvents {
     const event = this.getEvent(type);
 
     if (scope === 'global') {
-      if (!this._componentsByType.hasKey(type)) {
+      if (!this._componentsByType.hasValue(component)) {
         event.bind(component, ee, options);
       }
 
@@ -61,7 +61,7 @@ class CustomEvents {
     if (scope === 'global') {
       this._componentsByType.delete(type, component);
 
-      if (!this._componentsByType.hasKey(type)) {
+      if (!this._componentsByType.hasValue(component)) {
         event.unbind(component, ee);
       }
     } else {
