@@ -83,6 +83,6 @@ export class Application {
   handleError(error, message) {
     // DEV
     // console.error('%s\n\n%o\n\n%o', message, error, detail);
-    throw new Error(`🤦 ${exclamations.random()}! ${message}`);
+    throw new Error(`🤦 ${exclamations.random()}! ${message} \n ${error}`);
   }
 }
