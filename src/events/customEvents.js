@@ -44,7 +44,7 @@ class CustomEvents {
     const event = this.getEvent(type);
 
     if (scope === 'global') {
-      if (!this._componentsByType.hasValue(component)) {
+      if (!this._componentsByType.getValuesForKey(type).includes(component)) {
         event.bind(component, ee, options);
       }
 
