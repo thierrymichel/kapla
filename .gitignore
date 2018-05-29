@@ -100,7 +100,7 @@ Temporary Items
 
 ### Custom ###
 /dist
-/es
+/esm
 /lib
 /.npmignore
 /NOTES.md

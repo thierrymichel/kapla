@@ -1,24 +1,18 @@
-const webpack = require('webpack');
+const WebpackStrip = require('webpack-strip');
 const isProd = process.env.NODE_ENV === 'production';
 
-module.exports = {
+const config = {
   entry: './src/index.js',
   output: {
-    filename: isProd ? 'dist/kapla.min.js' : 'dist/kapla.js',
+    filename: isProd ? 'kapla.min.js' : 'kapla.js',
     library: 'Kapla',
     libraryTarget: 'umd',
     umdNamedDefine: true,
   },
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      beautify: false,
-      compress: {
-        warnings: false,
-        drop_console: true, // eslint-disable-line camelcase
-      },
-      sourceMap: false,
-    }),
-  ],
+  mode: isProd ? 'production' : 'development',
+  optimization: {
+    minimize: isProd,
+  },
   module: {
     rules: [
       {
@@ -29,3 +23,14 @@ module.exports = {
     ],
   },
 };
+
+if (isProd) {
+  config.module.rules.push({
+    test: /\.js$/,
+    use: [
+      { loader: WebpackStrip.loader('debug', 'console.info') },
+    ],
+  });
+}
+
+module.exports = config;

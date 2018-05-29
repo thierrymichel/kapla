@@ -3,7 +3,7 @@
     "commonjs": {
       "presets": ["env"]
     },
-    "es": {
+    "esm": {
       "presets": [
         ["env", {
           "modules": false
