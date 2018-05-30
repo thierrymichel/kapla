@@ -46,6 +46,14 @@ export class Context {
     }
   }
 
+  unsubscribeAll() {
+    try {
+      this.component.unsubscribeAll();
+    } catch (error) {
+      this.handleError(error, 'unsubscribing component');
+    }
+  }
+
   get application() {
     return this.module.application;
   }

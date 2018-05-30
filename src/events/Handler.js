@@ -10,6 +10,7 @@ import {
   customEvents,
   mixedEvents,
   passiveEvents,
+  subscribers,
 } from '../events';
 
 export class Handler {
@@ -160,5 +161,17 @@ export class Handler {
 
   unbind(type) {
     this._unbindEvent(type);
+  }
+
+  subscribe(slug) {
+    return subscribers.add(this, slug);
+  }
+
+  emit(...args) { // eslint-disable-line class-methods-use-this
+    subscribers.emit(this, ...args);
+  }
+
+  unsubscribeAll() {
+    subscribers.remove(this);
   }
 }

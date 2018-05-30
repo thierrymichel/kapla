@@ -37,6 +37,7 @@ export class Module {
     if (context && this.initializedContexts.has(context)) {
       this.initializedContexts.delete(context);
       context.unbindAll();
+      context.unsubscribeAll();
       context.destroy();
     }
   }

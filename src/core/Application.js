@@ -59,22 +59,6 @@ export class Application {
     this.customEvents.add(type, event);
   }
 
-  // DEV
-  // bind(...events) {
-  //   const items = Array.isArray(events[0]) ? events[0] : [{
-  //     name: events[0],
-  //     log: events[1],
-  //   }];
-
-  //   items.forEach(event => this.bus.add(event.name, event.log));
-  // }
-
-  // unbind(names) {
-  //   const items = Array.isArray(names) ? names : [names];
-
-  //   items.forEach(name => this.bus.remove(name));
-  // }
-
   get events() {
     return this.customEvents.events;
   }
