@@ -7,7 +7,7 @@ const app = createApplication();
 app.register('foo', Foo);
 
 const instance = app.manager.contexts[0].component;
-const element = instance.$element;
+const element = instance.$el;
 const ref = document.createElement('div');
 
 ref.setAttribute('data-ref', 'foo.child');

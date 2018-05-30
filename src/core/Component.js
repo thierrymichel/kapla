@@ -10,7 +10,7 @@ export class Component extends Handler {
     return this.context.scope;
   }
 
-  get $element() {
+  get $el() {
     return this.scope.element;
   }
 
