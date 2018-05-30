@@ -1,13 +1,11 @@
 import { ucfirst } from '../helpers';
 
 export class CustomEvent {
-  constructor(name) {
+  constructor(name, log) {
     this.name = name;
     this.capitalizedName = ucfirst(name);
-    // DEV
-    // this.type = `on${this.capitalizedName}`;
     this.scope = 'global';
-    this.log = true;
+    this.log = log;
     this.eventByElement = new Map();
   }
 

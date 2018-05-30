@@ -26,8 +26,8 @@ class CustomEvents {
     return this._eventByType.get(type);
   }
 
-  add(type, e) {
-    const event = e || new CustomEvent(type);
+  add(type, e, log = true) {
+    const event = e || new CustomEvent(type, log);
     const scope = event.scope || 'component';
 
     this._types.add(type);

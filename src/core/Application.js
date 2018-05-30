@@ -51,12 +51,12 @@ export class Application {
     return this.manager.contexts.map(context => context.component);
   }
 
-  use(type, event) {
+  use(type, event, log) {
     if (this.customEvents.types.has(type)) {
       this.handleError('oups', `This event type already exists [${type}]`);
     }
 
-    this.customEvents.add(type, event);
+    this.customEvents.add(type, event, log);
   }
 
   get events() {
