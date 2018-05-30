@@ -1,0 +1,12 @@
+### Custom ###
+/__mocks__
+/__tests__
+/src
+/.babelrc
+/.editorconfig
+/.eslintrc.json
+/.travis.yml
+/jest.config.js
+/webpack.config.js
+/EXAMPLE.MD
+/TODO.MD
