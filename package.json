@@ -27,7 +27,7 @@
     "test": "npm run lint && jest --coverage || exit 0",
     "test:watch": "jest --watch --verbose",
     "coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls",
-    "prepublish": "npm-run-all clean test build"
+    "prepare": "npm-run-all clean test build"
   },
   "repository": {
     "type": "git",
