@@ -13,7 +13,7 @@
 The main goal is to make easier to implement common tasks/features:
 
 - Component declaration and instanciation
-- Component init and destroy (Barba.js ou load more…)
+- Component init and destroy (Barba.js or load more…)
 - Access to `$el` et `$refs`
 - Use of `data-attribute`
 - Events handling with the right context (standard or custom)
@@ -33,13 +33,15 @@ Main features :
 ```
 
 ```js
-import { Application } from 'kapla/es';
-import { autoLoad } from 'kapla/es/helpers';
+import {
+  Application,
+  autoLoad,
+} from 'kapla';
 
-import MyComponent from 'components/MyComponent';
+import MyComponent from 'kapla/MyComponent';
 
-const context = require.context('./components', true, /\.js$/);
-const app = Application.start(qs('.app')); // If no element -> body
+const context = require.context('./kapla', true, /\.js$/);
+const app = Application.start(document.querySelector('.app')); // If no element -> body
 
 // Auto loading
 app.load(autoLoad(context));
@@ -56,11 +58,11 @@ app.register('my-component', MyComponent);
 <div data-component="sub--bar-baz"></div>
 ```
 
-- `scripts/components/Foo.js`
-- `scripts/components/sub/BarBaz.js`
+- `scripts/kapla/Foo.js`
+- `scripts/kapla/sub/BarBaz.js`
 
 ```js
-import { Component } from 'kapla/es';
+import { Component } from 'kapla';
 
 export default class extends Component {
     load() {}
@@ -70,6 +72,7 @@ export default class extends Component {
 ```
 
 > Component filename must be `PascalCase.js`
+> Same element can be used multiple components: `data-component="foo bar baz"`
 
 #### References
 
@@ -228,3 +231,14 @@ export default class extends Component {
     }
 }
 ```
+
+#### Communication between components
+
+You can "subscribe" to another component:
+
+- `const subscriber = this.subscribe('otherComponent')` (à tester : `other-component`)
+
+This returns the "subscriber", then you can "listen" for some custom event…
+
+- __component__: `subscriber.on('some-event', cb)`
+- __otherComponent__: `subscriber.emit('some-event'[, args])`
