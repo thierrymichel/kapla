@@ -2,8 +2,10 @@ import { Multimap } from '../multimap';
 
 const events = {
   enter: ['mouseenter', 'touchstart'],
-  move: ['mousemove', 'touchmove'],
   leave: ['mouseleave', 'touchend'],
+  move: ['mousemove', 'touchmove'],
+  over: ['mouseover', 'touchmove'],
+  out: ['mouseout', 'touchmove'],
 };
 
 export const mixedEvents = new Multimap();
