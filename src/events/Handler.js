@@ -30,11 +30,25 @@ export class Handler {
     this.context = context;
   }
 
-  static getMethod(eventName) {
-    const name = mixedEvents.hasValue(eventName) ?
-      mixedEvents.getKeysForValue(eventName)[0] :
-      eventName;
+  getMethod(eventName) {
+    let name = eventName;
+
+    // If part of mixed event, look for mixed event method
+    // ex: mousenter -> onEnter ?
+    if (
+      mixedEvents.hasValue(eventName) &&
+      this.constructor.events.includes(mixedEvents.getKeysForValue(eventName)[0])
+    ) {
+      [name] = mixedEvents.getKeysForValue(eventName);
+    }
+
     const type = ucfirst(name);
+
+    return `on${type}`;
+  }
+
+  static getNativeMethod(eventName) {
+    const type = ucfirst(eventName);
 
     return `on${type}`;
   }
@@ -64,7 +78,7 @@ export class Handler {
     }
 
     // Native event
-    if (this[Handler.getMethod(type)]) {
+    if (this[this.getMethod(type)]) {
       return 'native';
     }
 
@@ -132,10 +146,10 @@ export class Handler {
       const hasMatch = potentialElements.indexOf(targetElement) >= 0;
 
       if (hasMatch) {
-        this[Handler.getMethod(e.type)](e, targetElement);
+        this[this.getMethod(e.type)](e, targetElement);
       }
     } else {
-      this[Handler.getMethod(e.type)](e);
+      this[this.getMethod(e.type)](e);
     }
   }
 
