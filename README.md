@@ -120,8 +120,10 @@ Automatic binding/unbinding through lifecycle (init/destroy).
 ```js
 export default class extends Component {
     onEnter(e) {}
-    onMove(e) {}
     onLeave(e) {}
+    onMove(e) {}
+    onOver(e) {}
+    onOut(e) {}
 }
 ```
 
