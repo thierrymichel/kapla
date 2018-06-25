@@ -238,7 +238,7 @@ export default class extends Component {
 
 You can "subscribe" to another component:
 
-- `const subscriber = this.subscribe('otherComponent')` (à tester : `other-component`)
+- `const subscriber = this.subscribe('other-component')`
 
 This returns the "subscriber", then you can "listen" for some custom event…
 
