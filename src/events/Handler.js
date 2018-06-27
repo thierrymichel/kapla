@@ -47,12 +47,6 @@ export class Handler {
     return `on${type}`;
   }
 
-  static getNativeMethod(eventName) {
-    const type = ucfirst(eventName);
-
-    return `on${type}`;
-  }
-
   static getOptions(type, opts = { capture: false }) {
     // https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
     if (passiveEvents.includes(type)) {
