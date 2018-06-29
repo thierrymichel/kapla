@@ -28,7 +28,7 @@ class Subscribers {
   }
 
   add(component, slug) {
-    if (this._componentsBySlug.hasKey(slug, component)) {
+    if (this._componentsBySlug.has(slug, component)) {
       return this._subscribersBySlug
         .getValuesForKey(slug)
         .filter(subscriber => subscriber.component === component)[0];
