@@ -12,6 +12,8 @@ class Subscriber {
 
   on(name, cb) {
     this._callbacksByName.add(name, cb);
+
+    return this;
   }
 
   trigger(name, ...params) {
