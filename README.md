@@ -243,4 +243,4 @@ You can "subscribe" to another component:
 This returns the "subscriber", then you can "listen" for some custom event…
 
 - __component__: `subscriber.on('some-event', cb)`
-- __otherComponent__: `subscriber.emit('some-event'[, args])`
+- __otherComponent__: `this.emit('some-event'[, args])`
