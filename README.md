@@ -244,3 +244,5 @@ This returns the "subscriber", then you can "listen" for some custom event…
 
 - __component__: `subscriber.on('some-event', cb)`
 - __otherComponent__: `this.emit('some-event'[, args])`
+
+> NB: `.on` method returns "subscriber" and can be chained (`this.subscribe('c').on('foo', cb).on('bar', cb)…`).
