@@ -135,9 +135,29 @@ export class Handler {
     const delegate = this[`delegate${ucfirst(type)}`];
 
     if (delegate) {
-      const targetElement = e.target.matches(delegate) ? e.target : $parent(e.target, delegate);
-      const potentialElements = [...this.context.element.querySelectorAll(delegate)];
-      const hasMatch = potentialElements.indexOf(targetElement) >= 0;
+      let hasMatch = false;
+      let targetElement = null;
+
+      if (typeof delegate === 'string') {
+        const potentialElements = [...this.context.element.querySelectorAll(delegate)];
+
+        targetElement = e.target.matches(delegate) ? e.target : $parent(e.target, delegate);
+        hasMatch = potentialElements.indexOf(targetElement) >= 0;
+      } else {
+        const els = Array.isArray(delegate) || delegate instanceof NodeList ?
+          [...delegate] :
+          [delegate];
+
+        hasMatch = els.some(el => {
+          if (el === e.target || el.contains(e.target)) {
+            targetElement = el;
+
+            return true;
+          }
+
+          return false;
+        });
+      }
 
       if (hasMatch) {
         this[this.getMethod(e.type)](e, targetElement);

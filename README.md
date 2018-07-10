@@ -132,7 +132,10 @@ export default class extends Component {
 ```js
 export default class extends Component {
     init() {
-        this.delegateClick = 'selector';
+        this.delegateClick = 'selector'; // CSS selector
+        this.delegateClick = this.$refs.child; // HTMLElement
+        this.delegateClick = document.querySelectorAll('selector'); // HTMLCollection
+
         this.delegateMove = 'selector';
     }
     onClick(e, target) {}
