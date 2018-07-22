@@ -4,7 +4,10 @@ export class Context {
   constructor(module, element) {
     this.module = module;
     this.element = element;
-    this.scope = new Scope(this.schema, this.slug, element);
+
+    const { props } = this.module.application;
+
+    this.scope = new Scope(this.schema, this.slug, element, props);
 
     try {
       this.component = new module.ComponentConstructor(this);

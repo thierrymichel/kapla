@@ -5,17 +5,18 @@ import { Manager } from './Manager';
 import { customEvents } from '../events';
 
 export class Application {
-  static start(element, schema) {
-    const application = new Application(element, schema);
+  static start(element, schema, props) {
+    const application = new Application(element, schema, props);
 
     application.start();
 
     return application;
   }
 
-  constructor(element = document.body, schema = defaultSchema) {
+  constructor(element = document.body, schema = defaultSchema, props) {
     this.element = element;
     this.schema = schema;
+    this.props = props;
     this.manager = new Manager(this);
     this.customEvents = customEvents;
   }

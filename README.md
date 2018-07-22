@@ -49,6 +49,16 @@ app.load(autoLoad(context));
 app.register('my-component', MyComponent);
 ```
 
+### Pass "properties" to all components
+
+```js
+const app = Application.start(document.body, undefined, {
+  prop: 'value',
+});
+```
+
+Properties will be accessible in all components through `this.prop`.
+
 ### Use components
 
 #### Basics

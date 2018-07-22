@@ -1,10 +1,11 @@
 import { Data } from './Data';
 
 export class Scope {
-  constructor(schema, slug, element) {
+  constructor(schema, slug, element, props) {
     this.schema = schema;
     this.slug = slug;
     this.element = element;
+    this.props = props;
     this.data = new Data(this);
   }
 
