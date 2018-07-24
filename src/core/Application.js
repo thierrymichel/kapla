@@ -1,4 +1,4 @@
-const exclamations = require('exclamation');
+import exclamations from '../errors';
 
 import { defaultSchema } from './schema';
 import { Manager } from './Manager';

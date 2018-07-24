@@ -73,6 +73,6 @@
   "dependencies": {
     "detect-it": "^3.0.4",
     "eventemitter3": "^3.0.1",
-    "exclamation": "^0.1.0"
+    "exclamation": "thierrymichel/exclamation#master"
   }
 }
