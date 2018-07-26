@@ -13,7 +13,7 @@ export class Context {
       this.component = new module.ComponentConstructor(this);
       this.component.load();
     } catch (error) {
-      this.handleError(error, 'loading component');
+      this.handleError(error, `loading component [${this.slug}]`);
     }
   }
 
@@ -21,7 +21,7 @@ export class Context {
     try {
       this.component.init();
     } catch (error) {
-      this.handleError(error, 'initializing component');
+      this.handleError(error, `initializing component [${this.slug}]`);
     }
   }
 
@@ -29,7 +29,7 @@ export class Context {
     try {
       this.component.destroy();
     } catch (error) {
-      this.handleError(error, 'destroying component');
+      this.handleError(error, `destroying component [${this.slug}]`);
     }
   }
 
@@ -37,7 +37,7 @@ export class Context {
     try {
       this.component.bindAll();
     } catch (error) {
-      this.handleError(error, 'binding component');
+      this.handleError(error, `binding component [${this.slug}]`);
     }
   }
 
@@ -45,7 +45,7 @@ export class Context {
     try {
       this.component.unbindAll();
     } catch (error) {
-      this.handleError(error, 'unbinding component');
+      this.handleError(error, `unbinding component [${this.slug}]`);
     }
   }
 
@@ -53,7 +53,7 @@ export class Context {
     try {
       this.component.unsubscribeAll();
     } catch (error) {
-      this.handleError(error, 'unsubscribing component');
+      this.handleError(error, `unsubscribing component [${this.slug}]`);
     }
   }
 

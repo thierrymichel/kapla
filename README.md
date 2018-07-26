@@ -22,8 +22,14 @@ Main features :
 
 - Components `autoload` + declaration `data-component="foo"`
 - Component lifecycle : `load`, `init`, `destroy`
-- Easy references through `data-ref="foo.child"` -> `this.$refs.child`
-- Replace `dataset` with simple API `data-foo-prop="value"` -> `this.data.has('prop')`, `this.data.get('prop')`, `this.data.set('prop', 'another value')`
+- Easy references:
+    - `data-component="foo"` -> `this.$el`
+    - `data-ref="foo.child"` -> `this.$refs.child`
+- Provide simple API to manage `dataset`:
+    - `data-foo-prop="value"` ->
+        - `this.data.has('prop')` // true
+        - `this.data.get('prop')` // value
+        - `this.data.set('prop', 'another value')` // another value
 - Events binding/unbinding with `onClick() {}` ou `onCustomEvent() {}`
 
 ### Start application
@@ -38,14 +44,15 @@ import {
   autoLoad,
 } from 'kapla';
 
-import MyComponent from 'kapla/MyComponent';
+import MyComponent from 'kapla-register/MyComponent';
 
 const context = require.context('./kapla', true, /\.js$/);
-const app = Application.start(document.querySelector('.app')); // If no element -> body
+const app = Application.start(document.querySelector('.app')); // If no element -> document.body
 
 // Auto loading
+// Everything inside "context folder" and named in PascalCase
 app.load(autoLoad(context));
-// Manual loading
+// Manual registering
 app.register('my-component', MyComponent);
 ```
 
@@ -58,6 +65,8 @@ const app = Application.start(document.body, undefined, {
 ```
 
 Properties will be accessible in all components through `this.prop`.
+
+> The second paramater is for "custom schema" ([more info](src/core/schema.js))
 
 ### Use components
 
@@ -81,8 +90,8 @@ export default class extends Component {
 }
 ```
 
-> Component filename must be `PascalCase.js`
-> Same element can be used multiple components: `data-component="foo bar baz"`
+> Component filename must be `PascalCase.js` for autoload.
+> Same element can be used multiple components: `data-component="foo bar baz"`.
 
 #### References
 
@@ -96,6 +105,8 @@ export default class extends Component {
 this.$el // DIV
 this.$refs.submit // BUTTON
 ```
+
+> Same element can be ref for multiple components: `data-ref="foo.submit bar.button"`.
 
 #### Data
 
@@ -144,11 +155,11 @@ export default class extends Component {
     init() {
         this.delegateClick = 'selector'; // CSS selector
         this.delegateClick = this.$refs.child; // HTMLElement
-        this.delegateClick = document.querySelectorAll('selector'); // HTMLCollection
+        this.delegateClick = document.querySelectorAll('selector'); // HTMLCollection (or Array of elements)
 
         this.delegateMove = 'selector';
     }
-    onClick(e, target) {}
+    onClick(e, target) {} // extra "target" parameter
     onMove(e, target) {}
     …
 }
@@ -159,7 +170,7 @@ export default class extends Component {
 Need to be 'registered' (before component registration).
 
 ```js
-import { myCustomEvent } from './events';
+import { myCustomEvent } from './my-custom-events';
 
 app.use('myCustomEvent', myCustomEvent);
 ```
@@ -180,57 +191,88 @@ In this case, you can choose to log the event name when it is emitted…
 Also, global custom events are binded only when components are listening to them.
 They are unbinded when no more components are listening to them.
 
-```js
-export const clickOutside = {
-  eventsByElement: new Map(),
-  bind(component) {
-    this.eventsByElement.set(component.context.element, this.listener(component));
+`clickOutside.js`
 
-    window.addEventListener('click', this.eventsByElement.get(component.context.element));
-  },
+```js
+import { CustomEvent } from 'kapla';
+
+class MyEvent extends CustomEvent {
+  constructor(...args) {
+    super(...args);
+  }
+
+  bind(component) {
+    const { element } = component.context;
+
+    this.eventByElement.set(element, this.callback(component));
+    window.addEventListener('scroll', this.eventByElement.get(element));
+  }
+
   unbind(component) {
-    window.removeEventListener('click', this.eventsByElement.get(component.context.element));
-  },
-  listener(component) {
-    return function listener(e) {
+    const { element } = component.context;
+
+    window.removeEventListener('scroll', this.eventByElement.get(element));
+  }
+
+  callback(component) { // eslint-disable-line class-methods-use-this
+    return function callbacl(e) {
       if (!component.context.element.contains(e.target)) {
         component.onClickOutside(e);
       }
     };
-  },
+  }
 };
+
+export const clickOutside = new MyEvent('clickOutside');
 ```
 
-```js
-export const raf = {
-  scope: 'global',
-  log: false,
-  eventsByElement: new Map(),
-  bind(component, ee) {
-    this.ee = ee;
-    this.eventsByElement.set(component.context.element, this.listener(component));
+`raf.js`
 
-    this.ee.on('raf', this.eventsByElement.get(component.context.element));
+```js
+import { CustomEvent } from 'kapla';
+
+class MyEvent extends CustomEvent {
+  constructor(...args) {
+    super(...args);
+
+    this.scope = 'global';
+    this.log = false;
+  }
+
+  bind(component, ee) {
+    const { element } = component.context;
+
+    this.ee = ee;
+    this.eventByElement.set(element, this.callback(component));
+
+
+    this.ee.on('raf', this.eventByElement.get(element));
     this.onTick = this.onTick.bind(this);
     this.time = window.performance.now();
     this.raf = window.requestAnimationFrame(this.onTick);
-  },
-  unbind() {
+  }
+
+  unbind(component, ee) {
+    ee.off('raf', this.eventByElement.get(component.context.element));
     window.cancelAnimationFrame(this.raf);
-  },
+  }
+
   onTick(now) {
     this.time = now;
     this.delta = (now - this.oldTime) / 1000;
     this.oldTime = now;
     this.ee.emit('raf', this.delta, now);
     this.raf = window.requestAnimationFrame(this.onTick);
-  },
-  listener(component) {
-    return function listener(delta, now) {
+  }
+
+  callback(component) { // eslint-disable-line class-methods-use-this
+    return function callback(delta, now) {
       component.onRaf(delta, now);
     };
-  },
-};
+  }
+}
+
+export const raf = new MyEvent('raf');
 ```
 
 ##### Manual
@@ -249,13 +291,13 @@ export default class extends Component {
 
 #### Communication between components
 
-You can "subscribe" to another component:
+You can "subscribe" to another component. It makes communication easier between components:
 
 - `const subscriber = this.subscribe('other-component')`
 
 This returns the "subscriber", then you can "listen" for some custom event…
 
-- __component__: `subscriber.on('some-event', cb)`
-- __otherComponent__: `this.emit('some-event'[, args])`
+- __Component.js__: `subscriber.on('some-event', cb)`
+- __OtherComponent.js__: `this.emit('some-event'[, args])`
 
-> NB: `.on` method returns "subscriber" and can be chained (`this.subscribe('c').on('foo', cb).on('bar', cb)…`).
+> NB: `.on` method returns the "subscriber" and then can be chained (`this.subscribe('c').on('foo', cb).on('bar', cb)…`).
