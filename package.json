@@ -9,8 +9,7 @@
   "files": [
     "dist",
     "lib",
-    "esm",
-    "src"
+    "esm"
   ],
   "scripts": {
     "clean": "rimraf lib dist esm",
