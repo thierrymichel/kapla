@@ -45,6 +45,8 @@ export class Scope {
   getRefName(element) {
     return element
       .getAttribute(this.refAttribute)
+      .split(' ')
+      .find(ref => ref.match(`${this.slug}.`))
       .replace(`${this.slug}.`, '');
   }
 }
