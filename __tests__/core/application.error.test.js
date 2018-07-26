@@ -10,7 +10,7 @@ it('throws error on load', () => {
     app.register('foo', Bad);
   }
 
-  expect(register).toThrow(/🤦/);
+  expect(register).toThrow(/🤦.+loading component \[foo\]/);
 });
 
 it('throws error on init', () => {
@@ -19,7 +19,7 @@ it('throws error on init', () => {
     app.register('foo', Foo);
   }
 
-  expect(register).toThrow(/🤦/);
+  expect(register).toThrow(/🤦.+initializing component \[foo\]/);
 });
 
 it('throws error on destroy', () => {
@@ -28,5 +28,5 @@ it('throws error on destroy', () => {
     app.unload('foo');
   }
 
-  expect(unload).toThrow(/🤦/);
+  expect(unload).toThrow(/🤦.+destroying component \[foo\]/);
 });
