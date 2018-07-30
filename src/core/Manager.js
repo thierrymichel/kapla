@@ -74,7 +74,7 @@ export class Manager {
 
     // Args are used only for "no component / mixin" components
     if (args) {
-      module.initNoElement(args);
+      module.initNoElement(module.slug, args);
     } else {
       for (const element of elements) {
         module.initElement(element);
