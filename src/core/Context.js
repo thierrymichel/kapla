@@ -1,7 +1,7 @@
 import { Scope } from './Scope';
 
 export class Context {
-  constructor(module, element) {
+  constructor(module, element, args = null) {
     this.module = module;
     this.element = element;
 
@@ -9,11 +9,17 @@ export class Context {
 
     this.scope = new Scope(this.schema, this.slug, element, props);
 
-    try {
-      this.component = new module.ComponentConstructor(this);
-      this.component.load();
-    } catch (error) {
-      this.handleError(error, `loading component [${this.slug}]`);
+    // Args are used only for "no component / mixin" components
+    if (args) {
+      this.component = new module.ComponentConstructor(this, ...args);
+      this.init();
+    } else {
+      try {
+        this.component = new module.ComponentConstructor(this);
+        this.component.load();
+      } catch (error) {
+        this.handleError(error, `loading component [${this.slug}]`);
+      }
     }
   }
 

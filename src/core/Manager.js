@@ -32,7 +32,7 @@ export class Manager {
     this.observer.stop();
   }
 
-  addModule(definition) {
+  addModule(definition, args = null) {
     const { slug } = definition;
 
     this.removeModule(slug);
@@ -41,7 +41,7 @@ export class Manager {
 
     this.modulesBySlug.set(slug, module);
     // Init module
-    this._initModule(module);
+    this._initModule(module, args);
   }
 
   removeModule(slug) {
@@ -69,11 +69,16 @@ export class Manager {
   }
 
   // Private
-  _initModule(module) {
+  _initModule(module, args) {
     const elements = this.observer.getElementsMatchingToken(module.slug);
 
-    for (const element of elements) {
-      module.initElement(element);
+    // Args are used only for "no component / mixin" components
+    if (args) {
+      module.initNoElement(args);
+    } else {
+      for (const element of elements) {
+        module.initElement(element);
+      }
     }
   }
 

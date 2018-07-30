@@ -6,6 +6,7 @@ export class Module {
     this.definition = definition;
 
     this.contextsByElement = new WeakMap();
+    this.contextsByNoElement = new Map();
     this.initializedContexts = new Set();
   }
 
@@ -31,8 +32,28 @@ export class Module {
     }
   }
 
+  initNoElement(slug, args) {
+    const context = this._fetchContextForNoElement(slug, args);
+
+    if (context && !this.initializedContexts.has(context)) {
+      this.initializedContexts.add(context);
+      context.bindAll();
+    }
+  }
+
   destroyElement(element) {
     const context = this._fetchContextForElement(element);
+
+    if (context && this.initializedContexts.has(context)) {
+      this.initializedContexts.delete(context);
+      context.unbindAll();
+      context.unsubscribeAll();
+      context.destroy();
+    }
+  }
+
+  destroyNoElement(slug) {
+    const context = this._fetchContextForNoElement(slug);
 
     if (context && this.initializedContexts.has(context)) {
       this.initializedContexts.delete(context);
@@ -49,6 +70,17 @@ export class Module {
     if (!context) {
       context = new Context(this, element);
       this.contextsByElement.set(element, context);
+    }
+
+    return context;
+  }
+
+  _fetchContextForNoElement(slug, args) { // eslint-disable-line id-length
+    let context = this.contextsByNoElement.get(slug);
+
+    if (!context) {
+      context = new Context(this, null, args);
+      this.contextsByNoElement.set(slug, context);
     }
 
     return context;

@@ -42,6 +42,13 @@ export class Application {
     items.forEach(def => this.manager.addModule(def));
   }
 
+  init(slug, NoComponentConstructor, ...args) {
+    this.manager.addModule({
+      slug,
+      ComponentConstructor: NoComponentConstructor,
+    }, args);
+  }
+
   unload(slugs) {
     const items = Array.isArray(slugs) ? slugs : [slugs];
 
