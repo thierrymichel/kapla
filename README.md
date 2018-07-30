@@ -301,3 +301,59 @@ This returns the "subscriber", then you can "listen" for some custom event…
 - __OtherComponent.js__: `this.emit('some-event'[, args])`
 
 > NB: `.on` method returns the "subscriber" and then can be chained (`this.subscribe('c').on('foo', cb).on('bar', cb)…`).
+
+#### "NoComponent"
+
+Kapla can also be used with `NoComponent` aka "component-with-no-DOM-element".
+In this case, there is no "lifecycle" so you need to `init` those components "manually".
+
+```js
+import { NoComponent } from 'kapla';
+
+export default class MyNoComponentThing extends NoComponent {
+    init() {}
+    destroy() {}
+    onCustomEvent() {}
+    …
+}
+```
+
+For initilization: `app.init('my-no-component-thing', MyNoComponentThing);`
+
+> As this instance is unique, it is returned by the `init()` method.
+> To "kill" the instance, just `remove()` it.
+
+#### "Mixin"
+
+Last but not least, you can use Kapla [No]Components in "mixin" mode!
+For that, `mixComponent` and `mixNoComponent` are available.
+
+```js
+import { mixComponent } from 'kapla';
+import Fake from 'test/Fake';
+
+export default class Mix extends mixComponent(Fake) {
+  load() {}
+  init() {}
+  destroy() {}
+}
+```
+
+```js
+import { mixNoComponent } from 'kapla';
+import Fake from 'test/Fake';
+
+export default class MixNo extends mixNoComponent(Fake) {
+  init() {}
+  destroy() {}
+}
+```
+
+As you may pass some parameters to your "superclass", they also are registered/initiated manually.
+Just pass your arguments behind the constructor:
+
+- `app.register('mix', Mix, 'some', 'params');`
+- `app.init('mix-no', MixNo, 'some', 'other', 'params');`
+
+> You can "mix" multiples classes (not tested).
+> Of course, if you use `autoload`, put those files in another folder… ;)
