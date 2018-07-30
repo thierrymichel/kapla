@@ -95,7 +95,7 @@ export class Manager {
     const module = this.modulesBySlug.get(slug);
 
     if (module) {
-      module.initElement(element);
+      module.initElement(element, module.args);
     }
   }
 
