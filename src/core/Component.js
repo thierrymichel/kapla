@@ -46,3 +46,37 @@ export class Component extends Handler {
   destroy() {}
   /* eslint-enable no-empty-function, class-methods-use-this */
 }
+
+export const mixComponent = (...mixins) => {
+  class base extends Component {
+    constructor (...args) {
+      const [context, ...params] = args;
+
+      super(context);
+
+      mixins.forEach(Mixin => {
+        copyProps(this, new Mixin(...params));
+      });
+    }
+  }
+
+  // Copy all properties and symbols, filtering out some special ones
+  const copyProps = (target, source) => {
+    Object
+      .getOwnPropertyNames(source)
+      .concat(Object.getOwnPropertySymbols(source))
+      .forEach(prop => {
+        if (!prop.match(/^(?:constructor|prototype|arguments|caller|name|bind|call|apply|toString|length)$/)) {
+          Object.defineProperty(target, prop, Object.getOwnPropertyDescriptor(source, prop));
+        }
+      });
+  };
+
+  // Outside contructor() to allow aggregation(A,B,C).staticFunction() to be called etc.
+  mixins.forEach(mixin => {
+    copyProps(base.prototype, mixin.prototype);
+    copyProps(base, mixin);
+  });
+
+  return base;
+};

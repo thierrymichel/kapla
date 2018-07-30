@@ -29,11 +29,11 @@ export class Application {
     this.manager.stop();
   }
 
-  register(slug, ComponentConstructor) {
-    this.load({
+  register(slug, ComponentConstructor, ...args) {
+    this.manager.addModule({
       slug,
       ComponentConstructor,
-    });
+    }, false, args);
   }
 
   load(definitions) {
@@ -46,7 +46,7 @@ export class Application {
     this.manager.addModule({
       slug,
       ComponentConstructor: NoComponentConstructor,
-    }, args);
+    }, true, args);
 
     // Return the instance
     return this.components.find(component => component instanceof NoComponentConstructor);

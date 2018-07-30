@@ -32,16 +32,16 @@ export class Manager {
     this.observer.stop();
   }
 
-  addModule(definition, args = null) {
+  addModule(definition, noElement = false, args) {
     const { slug } = definition;
 
     this.removeModule(slug);
 
-    const module = new Module(this.application, definition);
+    const module = new Module(this.application, definition, args);
 
     this.modulesBySlug.set(slug, module);
     // Init module
-    this._initModule(module, args);
+    this._initModule(module, noElement);
   }
 
   removeModule(slug) {
@@ -69,15 +69,16 @@ export class Manager {
   }
 
   // Private
-  _initModule(module, args) {
+  _initModule(module, noElement) {
     const elements = this.observer.getElementsMatchingToken(module.slug);
 
-    // Args are used only for "no component / mixin" components
-    if (args) {
-      module.initNoElement(module.slug, args);
+    // NoElement means no DOM element (so no load and lifecycle)
+    // Args are used only for "mix" [no]components
+    if (noElement) {
+      module.initNoElement(module.slug, module.args);
     } else {
       for (const element of elements) {
-        module.initElement(element);
+        module.initElement(element, module.args);
       }
     }
   }

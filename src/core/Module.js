@@ -1,9 +1,10 @@
 import { Context } from './Context';
 
 export class Module {
-  constructor(application, definition) {
+  constructor(application, definition, args) {
     this.application = application;
     this.definition = definition;
+    this.args = args;
 
     this.contextsByElement = new WeakMap();
     this.contextsByNoElement = new Map();
@@ -22,8 +23,8 @@ export class Module {
     return Array.from(this.initializedContexts);
   }
 
-  initElement(element) {
-    const context = this._fetchContextForElement(element);
+  initElement(element, args) {
+    const context = this._fetchContextForElement(element, args);
 
     if (context && !this.initializedContexts.has(context)) {
       this.initializedContexts.add(context);
@@ -64,11 +65,11 @@ export class Module {
   }
 
   // Private
-  _fetchContextForElement(element) {
+  _fetchContextForElement(element, args) {
     let context = this.contextsByElement.get(element);
 
     if (!context) {
-      context = new Context(this, element);
+      context = new Context(this, element, args);
       this.contextsByElement.set(element, context);
     }
 

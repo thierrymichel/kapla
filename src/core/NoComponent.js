@@ -1,6 +1,6 @@
 import { Handler } from '../events';
 
-class NoComponent extends Handler {
+export class NoComponent extends Handler {
   constructor(context) {
     super(context);
     this.context = context;
@@ -38,7 +38,7 @@ class NoComponent extends Handler {
   /* eslint-enable no-empty-function, class-methods-use-this */
 }
 
-export const mixin = (...mixins) => {
+export const mixNoComponent = (...mixins) => {
   class base extends NoComponent {
     constructor (...args) {
       const [context, ...params] = args;

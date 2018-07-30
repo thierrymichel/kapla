@@ -1,25 +1,26 @@
 import { Scope } from './Scope';
 
 export class Context {
-  constructor(module, element, args = null) {
+  constructor(module, element, args) {
     this.module = module;
     this.element = element;
 
+    const params = args || [null];
     const { props } = this.module.application;
 
     this.scope = new Scope(this.schema, this.slug, element, props);
 
-    // Args are used only for "no component / mixin" components
-    if (args) {
-      this.component = new module.ComponentConstructor(this, ...args);
-      this.init();
-    } else {
+    // Args are used only for "mix" [no]components
+    if (element) {
       try {
-        this.component = new module.ComponentConstructor(this);
+        this.component = new module.ComponentConstructor(this, ...params);
         this.component.load();
       } catch (error) {
         this.handleError(error, `loading component [${this.slug}]`);
       }
+    } else {
+      this.component = new module.ComponentConstructor(this, ...params);
+      this.init();
     }
   }
 
