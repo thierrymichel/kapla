@@ -47,6 +47,9 @@ export class Application {
       slug,
       ComponentConstructor: NoComponentConstructor,
     }, args);
+
+    // Return the instance
+    return this.components.find(component => component instanceof NoComponentConstructor);
   }
 
   unload(slugs) {

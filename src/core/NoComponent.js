@@ -7,8 +7,6 @@ class NoComponent extends Handler {
 
     const { props } = this.scope;
 
-    console.info('PROPS', props);
-
     if (props) {
       for (const prop in props) {
         if (Object.prototype.hasOwnProperty.call(props, prop)) {
