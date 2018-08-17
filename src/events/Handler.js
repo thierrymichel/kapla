@@ -103,6 +103,7 @@ export class Handler {
         });
         break;
 
+      // Snitchy stuff
       case 'snitchy':
         this.context.element.addEventListener(
           type.replace(/^snitchy/, ''),
@@ -135,6 +136,7 @@ export class Handler {
         });
         break;
 
+      // Snitchy stuff
       case 'snitchy':
         this.context.element.removeEventListener(type.replace(/^snitchy/, ''), this);
         break;
@@ -182,6 +184,28 @@ export class Handler {
     } else {
       this[this.getMethod(e.type)](e);
     }
+
+    // Snitchy refactoring
+    if (this.snitchy) {
+      const data = this.snitchy.variables.components[this.slug];
+
+      if (data) {
+        this.snitchyTriggers = [];
+
+        const variables = Object
+          .keys(data)
+          .map(layer => data[layer])
+          .filter(layer => layer.trigger);
+
+        const variablesByTrigger = groupBy(variables, 'trigger');
+
+        Object.keys(variablesByTrigger).forEach(trigger => {
+          if (trigger === e.type) {
+            this.snitchy.component(this.slug, null, this, e.type);
+          }
+        });
+      }
+    }
   }
 
   bindAll() {
@@ -202,8 +226,10 @@ export class Handler {
         const variablesByTrigger = groupBy(variables, 'trigger');
 
         Object.keys(variablesByTrigger).forEach(trigger => {
-          this.snitchyTriggers.push(trigger);
-          this._bindEvent(`snitchy${trigger}`);
+          if (!events.includes(trigger)) {
+            this.snitchyTriggers.push(trigger);
+            this._bindEvent(`snitchy${trigger}`);
+          }
         });
       }
     }
@@ -216,6 +242,7 @@ export class Handler {
   unbindAll() {
     const { events } = this.constructor;
 
+    // Snitchy stuff
     if (this.snitchyTriggers) {
       this.snitchyTriggers.forEach(trigger => {
         this._unbindEvent(`snitchy${trigger}`);
