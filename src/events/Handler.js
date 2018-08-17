@@ -1,4 +1,5 @@
 import detectIt from 'detect-it';
+import { groupBy } from 'lodash';
 
 import {
   ucfirst,
@@ -76,6 +77,11 @@ export class Handler {
       return 'native';
     }
 
+    // Snitchy event
+    if (this.snitchyTriggers.includes(type.replace(/^snitchy/, ''))) {
+      return 'snitchy';
+    }
+
     return false;
   }
 
@@ -95,6 +101,13 @@ export class Handler {
         mixedEvents.getValuesForKey(type).forEach(mixed => {
           this.context.element.addEventListener(mixed, this, Handler.getOptions(mixed));
         });
+        break;
+
+      case 'snitchy':
+        this.context.element.addEventListener(
+          type.replace(/^snitchy/, ''),
+          this.snitchy.component.bind(this.snitchy, this.slug, null, this, type.replace(/^snitchy/, ''))
+        );
         break;
 
       case 'native':
@@ -120,6 +133,10 @@ export class Handler {
         mixedEvents.getValuesForKey(type).forEach(mixed => {
           this.context.element.removeEventListener(mixed, this, Handler.getOptions(mixed));
         });
+        break;
+
+      case 'snitchy':
+        this.context.element.removeEventListener(type.replace(/^snitchy/, ''), this);
         break;
 
       case 'native':
@@ -170,6 +187,27 @@ export class Handler {
   bindAll() {
     const events = this.constructor.events || [];
 
+    // Snitchy stuff
+    if (this.snitchy) {
+      const data = this.snitchy.variables.components[this.slug];
+
+      if (data) {
+        this.snitchyTriggers = [];
+
+        const variables = Object
+          .keys(data)
+          .map(layer => data[layer])
+          .filter(layer => layer.trigger);
+
+        const variablesByTrigger = groupBy(variables, 'trigger');
+
+        Object.keys(variablesByTrigger).forEach(trigger => {
+          this.snitchyTriggers.push(trigger);
+          this._bindEvent(`snitchy${trigger}`);
+        });
+      }
+    }
+
     events.forEach(type => {
       this._bindEvent(type);
     });
@@ -177,6 +215,12 @@ export class Handler {
 
   unbindAll() {
     const { events } = this.constructor;
+
+    if (this.snitchyTriggers) {
+      this.snitchyTriggers.forEach(trigger => {
+        this._unbindEvent(`snitchy${trigger}`);
+      });
+    }
 
     events.forEach(type => {
       this._unbindEvent(type);
