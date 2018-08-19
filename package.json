@@ -66,6 +66,7 @@
     "npm-run-all": "^4.1.2",
     "rimraf": "^2.6.2",
     "webpack": "^4.10.0",
+    "webpack-bundle-analyzer": "^2.13.1",
     "webpack-cli": "^2.1.4",
     "webpack-strip": "^0.1.0"
   },

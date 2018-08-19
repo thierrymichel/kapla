@@ -19,6 +19,7 @@ export class Application {
     this.props = props;
     this.manager = new Manager(this);
     this.customEvents = customEvents;
+    this.plugins = new Set();
   }
 
   start() {
@@ -72,6 +73,11 @@ export class Application {
 
   get events() {
     return this.customEvents.events;
+  }
+
+  extend(plugin) {
+    plugin.init();
+    this.plugins.add(plugin);
   }
 
   // eslint-disable-next-line class-methods-use-this

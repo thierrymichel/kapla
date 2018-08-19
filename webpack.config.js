@@ -1,4 +1,5 @@
 const WebpackStrip = require('webpack-strip');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const isProd = process.env.NODE_ENV === 'production';
 
 const config = {
@@ -13,6 +14,9 @@ const config = {
   optimization: {
     minimize: isProd,
   },
+  resolve: {
+    mainFields: ['module', 'browser', 'main'],
+  },
   module: {
     rules: [
       {
@@ -22,6 +26,12 @@ const config = {
       },
     ],
   },
+  plugins: [
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      reportFilename: '../report.html',
+    }),
+  ],
 };
 
 if (isProd) {
