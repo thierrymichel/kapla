@@ -194,7 +194,7 @@ export class Handler {
     });
 
     this.plugins.forEach(plugin => {
-      plugin.unbindAll && plugin.unbindAll(this);
+      plugin.unbindAll && plugin.unbindAll(this, events);
     });
   }
 
