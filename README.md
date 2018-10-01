@@ -2,7 +2,7 @@
 
 ![stability-wip](https://img.shields.io/badge/stability-work_in_progress-lightgrey.svg?style=flat-square)
 [![NPM version](https://img.shields.io/npm/v/kapla.svg?style=flat-square)](https://www.npmjs.com/package/kapla)
-[![Coverage Status](https://img.shields.io/coveralls/thierrymichel/kapla/master.svg?style=flat-square)](https://travis-ci.com/thierrymichel/kapla)
+[![Coverage Status](https://img.shields.io/coveralls/thierrymichel/kapla/master.svg?style=flat-square)](https://travis-ci.com/thierrymichel/kapla) [![Greenkeeper badge](https://badges.greenkeeper.io/thierrymichel/kapla.svg)](https://greenkeeper.io/)
 
 > Tiny JS framework to manage DOM components
 
