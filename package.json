@@ -18,7 +18,7 @@
     "build": "npm-run-all build:esm build:umd build:umd:min build:commonjs",
     "build:esm": "cpx 'src/**/*.{mjs,js,json}' esm",
     "build:esm:watch": "npm run build:esm -- -w",
-    "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --extensions .mjs --out-dir lib",
+    "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
     "build:commonjs:watch": "npm run build:commonjs -- --watch",
     "build:umd": "cross-env BABEL_ENV=umd NODE_ENV=development webpack --progress --profile",
     "build:umd:watch": "npm run build:umd -- --watch",
