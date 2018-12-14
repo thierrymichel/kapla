@@ -1,24 +1,42 @@
 {
   "env": {
-    "commonjs": {
-      "presets": ["env"]
-    },
     "esm": {
       "presets": [
-        ["env", {
+        ["@babel/preset-env", {
           "modules": false
         }]
       ]
     },
     "umd": {
-      "presets": ["env"],
-      "plugins": [
-        "add-module-exports"
+      "presets": [
+        [
+          "@babel/env",
+          {
+            "modules": "commonjs",
+            "targets": {
+              "browsers": ["last 2 versions", "ie >= 11"]
+            }
+          }
+        ]
       ]
+    },
+    "commonjs": {
+      "presets": [
+        [
+          "@babel/env",
+          {
+            "targets": {
+              "browsers": ["last 2 versions", "ie >= 11"]
+            },
+            "modules": false
+          }
+        ]
+      ],
+      "plugins": ["add-module-exports"]
     },
     "test": {
       "presets": [
-        ["env", {
+        ["@babel/preset-env", {
           "modules": "commonjs"
         }]
       ]
