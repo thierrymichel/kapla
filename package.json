@@ -1,6 +1,6 @@
 {
   "name": "kapla",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "Tiny JS framework to manage DOM components",
   "homepage": "https://github.com/thierrymichel/kapla#readme",
   "module": "esm/index.js",
