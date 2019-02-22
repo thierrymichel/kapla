@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "clean": "rimraf lib dist esm",
-    "filesize": "gzip-size lib/kapla.min.js",
+    "filesize": "gzip-size dist/kapla.min.js",
     "lint": "eslint src/** || exit 0",
     "build": "npm-run-all build:esm build:umd build:umd:min build:commonjs",
     "build:esm": "cpx 'src/**/*.{mjs,js,json}' esm",
