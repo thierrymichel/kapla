@@ -92,7 +92,7 @@ export class Application {
    * @memberof Application
    */
   instanceByElementAsync(el) {
-    return this._nextTask().then(this._getInstanceByElement(el));
+    return this._nextTask().then(() => this._getInstanceByElement(el));
   }
 
   _getInstanceByElement(el) {
@@ -121,7 +121,7 @@ export class Application {
    * @memberof Application
    */
   instancesByComponentAsync(Component) { // eslint-disable-line id-length
-    return this._nextTask().then(this._getInstancesByComponent(Component));
+    return this._nextTask().then(() => this._getInstancesByComponent(Component));
   }
 
   _getInstancesByComponent(Component) {
