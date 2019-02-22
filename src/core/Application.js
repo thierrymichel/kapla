@@ -59,8 +59,83 @@ export class Application {
     items.forEach(slug => this.manager.removeModule(slug));
   }
 
+  /**
+   * Get "active" components
+   *
+   * @returns {Array} components
+   * @readonly
+   * @memberof Application
+   */
   get components() {
     return this.manager.contexts.map(context => context.component);
+  }
+
+  /**
+   * Get instance by element
+   *
+   * @param {HTMLElement} el component main element
+   * @returns {Object} component instance
+   * @memberof Application
+   */
+  instanceByElement(el) {
+    return this._getInstanceByElement(el);
+  }
+
+  /**
+   * Get instance by element in async mode
+   * more reliable implementation with MutationObserver async behaviour
+   * use case : when component is added to the page
+   * concurrently to the code execution
+   * https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/
+   *
+   * @param {HTMLElement} el component main element
+   * @returns {Object} component instance
+   * @memberof Application
+   */
+  instanceByElementAsync(el) {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(this._getInstanceByElement(el));
+      });
+    });
+  }
+
+  _getInstanceByElement(el) {
+    return this.components.find(c => c.$el === el);
+  }
+
+  /**
+   * Get instances by component class
+   *
+   * @param {Function} Component component class
+   * @returns {Object[]} component instances list
+   * @memberof Application
+   */
+  instancesByComponent(Component) {
+    return this._getInstanceByComponent(Component);
+  }
+
+  /**
+   * Get instances by component class in async mode
+   * more reliable implementation with MutationObserver async behaviour
+   * use case : when component is added to the page
+   * concurrently to the code execution
+   * https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/
+   *
+   * @param {Function} Component component class
+   * @returns {Object[]} component instances list
+   * @memberof Application
+   */
+  instancesByComponentAsync(Component) { // eslint-disable-line id-length
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(this._getInstanceByComponent(Component));
+      });
+    });
+  }
+
+  _getInstancesByComponent(Component) {
+    return this.components.filter(c => c instanceof Component);
   }
 
   use(type, event, log) {
