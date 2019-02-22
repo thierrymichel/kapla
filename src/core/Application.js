@@ -86,18 +86,13 @@ export class Application {
    * more reliable implementation with MutationObserver async behaviour
    * use case : when component is added to the page
    * concurrently to the code execution
-   * https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/
    *
    * @param {HTMLElement} el component main element
    * @returns {Object} component instance
    * @memberof Application
    */
   instanceByElementAsync(el) {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(this._getInstanceByElement(el));
-      });
-    });
+    return this._nextTask().then(this._getInstanceByElement(el));
   }
 
   _getInstanceByElement(el) {
@@ -120,22 +115,27 @@ export class Application {
    * more reliable implementation with MutationObserver async behaviour
    * use case : when component is added to the page
    * concurrently to the code execution
-   * https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/
    *
    * @param {Function} Component component class
    * @returns {Object[]} component instances list
    * @memberof Application
    */
   instancesByComponentAsync(Component) { // eslint-disable-line id-length
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(this._getInstanceByComponent(Component));
-      });
-    });
+    return this._nextTask().then(this._getInstancesByComponent(Component));
   }
 
   _getInstancesByComponent(Component) {
     return this.components.filter(c => c instanceof Component);
+  }
+
+  // https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/
+  // eslint-disable-next-line class-methods-use-this
+  _nextTask() {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 0);
+    });
   }
 
   use(type, event, log) {
