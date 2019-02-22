@@ -107,7 +107,7 @@ export class Application {
    * @memberof Application
    */
   instancesByComponent(Component) {
-    return this._getInstanceByComponent(Component);
+    return this._getInstancesByComponent(Component);
   }
 
   /**
