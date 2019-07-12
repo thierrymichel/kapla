@@ -205,17 +205,17 @@ class MyEvent extends CustomEvent {
     const { element } = component.context;
 
     this.eventByElement.set(element, this.callback(component));
-    window.addEventListener('scroll', this.eventByElement.get(element));
+    document.addEventListener('click', this.eventByElement.get(element));
   }
 
   unbind(component) {
     const { element } = component.context;
 
-    window.removeEventListener('scroll', this.eventByElement.get(element));
+    document.removeEventListener('click', this.eventByElement.get(element));
   }
 
   callback(component) { // eslint-disable-line class-methods-use-this
-    return function callbacl(e) {
+    return function callback(e) {
       if (!component.context.element.contains(e.target)) {
         component.onClickOutside(e);
       }
