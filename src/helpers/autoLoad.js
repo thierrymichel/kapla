@@ -61,7 +61,7 @@ function buildDefinition(module, slug) {
  */
 function getSlug(key, stripFolders) {
   // [folder/[subfolders/]]MyComponentFileName.js
-  const regex = /^(?:\.\/)?([A-Z]{1}[A-Za-z]+|[a-z/]+\/[A-Z]{1}[A-Za-z]+)(?:\.js?)$/;
+  const regex = /^(?:\.\/)?([A-Z]{1}[A-Za-z]+|[a-z-/]+\/[A-Z]{1}[A-Za-z]+)(?:\.js?)$/;
   let [, logicalName] = key.match(regex) || [];
 
   if (logicalName) {
