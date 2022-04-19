@@ -6,7 +6,7 @@
 
 > Tiny JS framework to manage DOM components
 
-## wip
+## wip (this project is no longer maintained)
 
 ### Overview
 
