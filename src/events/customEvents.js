@@ -58,11 +58,11 @@ class CustomEvents {
     const scope = this.getScope(type);
     const event = this.getEvent(type);
 
-    if (scope === 'global') {
-      this._componentsByType.delete(type, component);
 
-      if (!this._componentsByType.hasValue(component)) {
+    if (scope === 'global') {
+      if (this._componentsByType.has(type, component)) {
         event.unbind(component, ee);
+        this._componentsByType.delete(type, component);
       }
     } else {
       event.unbind(component, ee);
